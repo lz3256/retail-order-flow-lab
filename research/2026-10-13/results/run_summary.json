@@ -1,0 +1,17 @@
+{
+  "completed_at_utc": "2026-10-13T21:35:17.870129+00:00",
+  "complete": true,
+  "panel_rows": 258000,
+  "formation_windows": 258,
+  "simulation_replications": 576,
+  "primary_tests": 24,
+  "original_files_unchanged": true,
+  "empirical_scope": "Previously inspected historical data; exploratory chronological forecasts, no untouched new holdout",
+  "forecast_uncertainty": "Block resampling of observed fitted losses, conditional on the trained models; no full training refit",
+  "not_established": [
+    "true signing accuracy",
+    "causal impact of measurement error",
+    "cost-adjusted trading gain",
+    "new-period confirmation"
+  ]
+}

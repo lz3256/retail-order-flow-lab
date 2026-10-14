@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+**/private-inputs/
+**/work/
+**/data/
+*.parquet
+*.npz
+*.pt
+**/protocol.json
+**/protocol_receipt.json

@@ -1,0 +1,103 @@
+{
+  "created_at_utc": "2026-10-13T21:32:53.962183+00:00",
+  "status": "exploratory; original historical outcomes have already been inspected",
+  "source": "private-inputs/data",
+  "scopes": [
+    "development",
+    "holdout",
+    "post_pilot"
+  ],
+  "dates": {
+    "development": "2020-2022",
+    "holdout": "2023-2025 January (historical holdout already opened)",
+    "post_pilot": "2025 February-December (previously inspected)"
+  },
+  "original_primary": "Retain original result and sample; these new tests cannot overturn its status.",
+  "controls": [
+    "past5",
+    "past20",
+    "logcap",
+    "vol20",
+    "logadv20",
+    "relative_spread",
+    "beta"
+  ],
+  "methods": {
+    "qmp": "Original five-session QMP signed-share-volume imbalance",
+    "bjzz_common": "Original BJZZ signal on common valid-quote eligible prints; its signed print set differs from QMP",
+    "qmp_weighted": "Weight stock-day signed buy and sell volumes by 1-disagreements/both_signed; five days, no fitted parameter",
+    "qmp_drop_worst": "Remove the single stock-day with highest disagreement fraction; ties remove earliest day; retain four days",
+    "qmp_random_drop": "Remove one of five stock-days uniformly; deterministic seed; same four-day count, not equal retained volume",
+    "proxy_blend": "Equal mean of original QMP and BJZZ OIB; proxy combination, not independent-error correction"
+  },
+  "no_truth": "Neither proxy is ground truth; disagreement is not a misclassification probability.",
+  "missing_disagreement": "Both-signed count zero: fraction unavailable; retain as missing, no zero imputation.",
+  "signal_eligibility": "All five daily records and fractions required; each variant >=20 retained unweighted signed prints and positive denominator. Complete formation/control intersection for all variants. Future-label missingness counted separately.",
+  "daily_level_limit": "No jointly-signed buy/sell volume in cache. Exact agreement-only trade signal cannot be reconstructed; no trade-level filtering or true error correction claimed.",
+  "matched_control": "20 seeded uniform four-day deletion replications; average their per-week metrics, never average their signals for this comparison",
+  "outcomes": "Original next-close entry, five-session week1 return; original non-overlapping windows and settlement rules inherited.",
+  "diagnostics": "Raw Spearman IC, FWL control/industry-adjusted coefficient, agreement with QMP, mean retained share-volume fraction",
+  "forecasting": "Expanding ridge; at least 52 matured windows; each training week weighted equally; fixed penalty 1; no tuning; all training exits <= current signal date; current features normalized using formation information only.",
+  "forecast_design": "Intercept, SIC2 dummies for fixed codes 1..99, seven cross-section normalized controls, optionally one normalized OIB. Normalize/winsorize controls at formation 1/99 percentiles; OIB standardized, not winsorized. Only missing outcomes excluded from loss calculation.",
+  "primary_inference": "4 method-vs-QMP comparisons (BJZZ, weighted, drop-worst, blend) x 3 scopes x 2 metrics (IC and predictive MSE) =24 tests; Holm correction across all 24. 4000 circular 4-window block bootstrap paired CIs; HAC lag4 normal p values. Bootstrap conditional on fitted predictions, does not retrain models.",
+  "secondary_inference": "drop-worst IC minus average random-deletion IC: 3 scopes, Holm3; 8-window bootstrap sensitivity for primary contrasts.",
+  "simulation": {
+    "stocks": 1500,
+    "replicates": 8,
+    "trade_counts": [
+      20,
+      100,
+      500
+    ],
+    "weights": [
+      "equal",
+      "lognormal_sigma1.5"
+    ],
+    "flip_rates": [
+      0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "mechanisms": [
+      "independent_symmetric",
+      "stock_dependent_symmetric"
+    ],
+    "return_model": "0.15*zscore(true realized OIB)+independent N(0,1)",
+    "purpose": "Verify exact conditional mean/variance under independent flips, Pearson attenuation approximation and empirical Spearman behavior; these are simulated assumptions."
+  },
+  "bounded_sensitivity": "Assume at most delta of signed SHARE VOLUME is wrongly signed, with fixed trade membership/denominator; |true OIB-observed OIB|<=2delta. delta=.01,.025,.05,.1,.2. Report robust signs and pairwise ordering; no claim these are estimated errors.",
+  "seed": 20261013,
+  "references": [
+    {
+      "title": "A (Sub)penny for Your Thoughts: Tracking Retail Investor Activity in TAQ",
+      "authors": "Barber et al.",
+      "year": 2024,
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1111/jofi.13334",
+      "role": "Empirical motivation for spread-dependent signing issues; published error rates do not transfer to this sample."
+    },
+    {
+      "title": "Revisiting Boehmer et al. (2021): Recent Period, Alternative Method, Different Conclusions",
+      "authors": "Ardia, Aymard, Cenesizoglu",
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2403.17095",
+      "role": "Motivates separate-period, paired algorithm comparisons."
+    },
+    {
+      "title": "Econometric Inference with Machine-Learned Proxies: Partial Identification via Data Combination",
+      "authors": "Lixiong Li",
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2604.10770",
+      "role": "Identification boundary; auxiliary truth validation data required. Its estimator is not implemented without such data."
+    },
+    {
+      "title": "Simulation-Extrapolation Estimation in Parametric Measurement Error Models",
+      "authors": "Cook and Stefanski",
+      "year": 1994,
+      "url": "https://doi.org/10.1080/01621459.1994.10476871",
+      "role": "Known-error assumptions motivate sensitivity simulations; no unidentified SIMEX extrapolation on real data."
+    }
+  ]
+}

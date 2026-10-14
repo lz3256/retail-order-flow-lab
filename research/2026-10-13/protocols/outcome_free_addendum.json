@@ -1,0 +1,7 @@
+{
+  "recorded_at_utc": "2026-10-13T21:36:45.294677+00:00",
+  "reason": "Explanatory diagnostic added after main results; no new predictive method or tuning",
+  "outcomes_used": false,
+  "identity": "weighted OIB - original OIB = Cov_p(weight, daily OIB)/E_p(weight), p proportional to daily QMP signed volume",
+  "implication": "Stock-specific weight constant over its five-day window cancels exactly; changes depend on within-window co-movement, not merely high disagreement levels."
+}
